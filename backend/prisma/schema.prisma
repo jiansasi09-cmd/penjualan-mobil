@@ -1,0 +1,348 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//////////////////////////////////////////////////
+// USER INTERNAL (Admin, Sales, Owner)
+//////////////////////////////////////////////////
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+  penjualan          Penjualan[] // hanya untuk SALES
+  pembayaranCustomer PembayaranCustomer[] // optional, jika perlu akses
+}
+
+enum Role {
+  ADMIN
+  SALES
+  OWNER
+}
+
+//////////////////////////////////////////////////
+// CUSTOMER PORTAL
+//////////////////////////////////////////////////
+model Customer {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  email     String   @unique
+  password  String
+  noTelp    String
+  alamat    String?
+  createdAt DateTime @default(now())
+
+  favorit    Favorit[]
+  booking    Booking[]
+  pesanan    Pesanan[]
+  pembayaran PembayaranCustomer[]
+}
+
+//////////////////////////////////////////////////
+// MASTER DATA SHOWROOM
+//////////////////////////////////////////////////
+model Mobil {
+  id Int @id @default(autoincrement())
+
+  // Identitas
+  nama  String
+  merk  String
+  tipe  String
+  tahun Int
+  warna String
+
+  // Spesifikasi
+  kilometer   Int
+  transmisi   Transmisi
+  bahan_bakar BahanBakar
+
+  // Bisnis
+  harga  Float
+  stok   Int         @default(0)
+  status StatusMobil @default(READY)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi (tetap)
+  prItems    PurchaseRequestItem[]
+  poItems    PurchaseOrderItem[]
+  detailJual DetailPenjualan[]
+  detailBeli DetailPembelian[]
+  favorit    Favorit[]
+  booking    Booking[]
+  pesanan    Pesanan[]
+}
+
+enum Transmisi {
+  Manual
+  Automatic
+}
+
+enum BahanBakar {
+  Bensin
+  Diesel
+  Hybrid
+  Listrik
+}
+
+enum StatusMobil {
+  READY
+  BOOKED
+  TERJUAL
+}
+
+model Sales {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  noTelp    String
+  alamat    String
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  penjualan Penjualan[]
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  noTelp    String
+  alamat    String
+  createdAt DateTime @default(now())
+
+  pembelian Pembelian[]
+}
+
+//////////////////////////////////////////////////
+// FAVORIT / BOOKING / PESANAN / PEMBAYARAN
+//////////////////////////////////////////////////
+model Favorit {
+  id         Int @id @default(autoincrement())
+  customerId Int
+  mobilId    Int
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  mobil    Mobil    @relation(fields: [mobilId], references: [id])
+
+  @@unique([customerId, mobilId])
+}
+
+model Booking {
+  id         Int           @id @default(autoincrement())
+  customerId Int
+  mobilId    Int
+  tanggal    DateTime
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  mobil    Mobil    @relation(fields: [mobilId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DONE
+}
+
+model Pesanan {
+  id         Int           @id @default(autoincrement())
+  customerId Int
+  mobilId    Int
+  hargaDeal  Float
+  status     StatusPesanan @default(MENUNGGU_KONFIRMASI)
+  createdAt  DateTime      @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  mobil    Mobil    @relation(fields: [mobilId], references: [id])
+
+  pembayaran PembayaranCustomer[]
+}
+
+enum StatusPesanan {
+  MENUNGGU_KONFIRMASI
+  DIPROSES
+  SELESAI
+  DIBATALKAN
+}
+
+model PembayaranCustomer {
+  id         Int         @id @default(autoincrement())
+  pesananId  Int
+  customerId Int
+  userId     Int? // opsional, user internal yang verifikasi
+  jumlah     Float
+  metode     MetodeBayar
+  bukti      String?
+  status     StatusBayar @default(PENDING)
+  tanggal    DateTime    @default(now())
+
+  pesanan  Pesanan  @relation(fields: [pesananId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+  user     User?    @relation(fields: [userId], references: [id])
+}
+
+//////////////////////////////////////////////////
+// TRANSAKSI OFFLINE SHOWROOM
+//////////////////////////////////////////////////
+model Penjualan {
+  id        Int      @id @default(autoincrement())
+  salesId   Int
+  tanggal   DateTime @default(now())
+  total     Float
+  createdAt DateTime @default(now())
+
+  sales      Sales             @relation(fields: [salesId], references: [id])
+  detail     DetailPenjualan[]
+  pembayaran Pembayaran[]
+  user       User?             @relation(fields: [userId], references: [id])
+  userId     Int?
+}
+
+model DetailPenjualan {
+  id          Int   @id @default(autoincrement())
+  penjualanId Int
+  mobilId     Int
+  qty         Int
+  harga       Float
+  subtotal    Float
+
+  penjualan Penjualan @relation(fields: [penjualanId], references: [id])
+  mobil     Mobil     @relation(fields: [mobilId], references: [id])
+}
+
+model Pembelian {
+  id         Int      @id @default(autoincrement())
+  supplierId Int
+  tanggal    DateTime @default(now())
+  total      Float
+
+  supplier Supplier          @relation(fields: [supplierId], references: [id])
+  detail   DetailPembelian[]
+}
+
+model DetailPembelian {
+  id          Int   @id @default(autoincrement())
+  pembelianId Int
+  mobilId     Int
+  qty         Int
+  harga       Float
+  subtotal    Float
+
+  pembelian Pembelian @relation(fields: [pembelianId], references: [id])
+  mobil     Mobil     @relation(fields: [mobilId], references: [id])
+}
+
+model Pembayaran {
+  id          Int         @id @default(autoincrement())
+  penjualanId Int
+  jumlah      Float
+  metode      MetodeBayar
+  tanggal     DateTime    @default(now())
+
+  penjualan Penjualan @relation(fields: [penjualanId], references: [id])
+}
+
+enum MetodeBayar {
+  CASH
+  TRANSFER
+  KREDIT
+}
+
+enum StatusBayar {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PRStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum POStatus {
+  AKTIF
+  SELESAI
+  DIBATALKAN
+}
+
+enum InvoiceStatus {
+  BELUM_LUNAS
+  LUNAS
+}
+
+enum ActivityType {
+  PURCHASING
+  SALES
+  INVENTORY
+  SYSTEM
+}
+
+model PurchaseRequest {
+  id        Int      @id @default(autoincrement())
+  tanggal   DateTime @default(now())
+  status    PRStatus @default(PENDING)
+  createdAt DateTime @default(now())
+
+  items PurchaseRequestItem[]
+}
+
+model PurchaseRequestItem {
+  id      Int @id @default(autoincrement())
+  prId    Int
+  mobilId Int
+  qty     Int
+
+  pr    PurchaseRequest @relation(fields: [prId], references: [id])
+  mobil Mobil           @relation(fields: [mobilId], references: [id])
+}
+
+model PurchaseOrder {
+  id        Int      @id @default(autoincrement())
+  tanggal   DateTime @default(now())
+  status    POStatus @default(AKTIF)
+  createdAt DateTime @default(now())
+
+  items PurchaseOrderItem[]
+
+  // RELASI BARU (WAJIB)
+  invoices Invoice[]
+}
+
+model PurchaseOrderItem {
+  id      Int   @id @default(autoincrement())
+  poId    Int
+  mobilId Int
+  qty     Int
+  harga   Float
+
+  po    PurchaseOrder @relation(fields: [poId], references: [id])
+  mobil Mobil         @relation(fields: [mobilId], references: [id])
+}
+
+model Invoice {
+  id      Int           @id @default(autoincrement())
+  poId    Int
+  total   Float
+  status  InvoiceStatus @default(BELUM_LUNAS)
+  tanggal DateTime      @default(now())
+
+  po PurchaseOrder @relation(fields: [poId], references: [id])
+}
+
+model ActivityLog {
+  id        Int          @id @default(autoincrement())
+  type      ActivityType
+  message   String
+  createdAt DateTime     @default(now())
+}
