@@ -14,6 +14,7 @@ import MobilAdd from '@/views/admin/MobilAdd.vue'
 import MobilEdit from '@/views/admin/MobilEdit.vue'
 import Sales from '@/views/admin/Sales.vue'
 import SalesAdd from '@/views/admin/SalesAdd.vue'
+import EditSales from '@/views/admin/SalesEdit.vue'
 import Supplier from '@/views/admin/Supplier.vue'
 import Pembelian from '@/views/admin/Pembelian.vue'
 import Penjualan from '@/views/admin/Penjualan.vue'
@@ -34,6 +35,7 @@ import CustomerEdit from '@/views/customer/CustomerEdit.vue'
 
 // ================= CUSTOMER VIEWS =================
 import MobilList from '@/views/customer/MobilList.vue'
+import SalesEdit from '../views/admin/SalesEdit.vue'
 
 const routes = [
   // ================= ROOT REDIRECT =================
@@ -81,6 +83,7 @@ const routes = [
 
       { path: 'sales', name: 'admin-sales', component: Sales },
       { path: 'sales/add', name: 'admin-sales-add', component: SalesAdd },
+      {path: 'sales/edit/:id',name: 'admin-sales-edit',component: SalesEdit},
       
       {path: 'supplier',name: 'admin-supplier',component: Supplier},
       {path: 'supplier/add',name: 'admin-supplier-add',component: SupplierAdd},

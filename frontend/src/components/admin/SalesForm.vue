@@ -1,42 +1,27 @@
 <template>
-  <form @submit.prevent="submit" class="space-y-4">
-    <BaseInput label="Nama" v-model="form.nama" />
-    <BaseInput label="No Telp" v-model="form.noTelp" />
-    <BaseInput label="Alamat" v-model="form.alamat" />
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-bold">Data Sales</h1>
+      <router-link
+        to="/admin/sales/add"
+        class="px-4 py-2 bg-blue-600 text-white rounded"
+      >
+        Tambah Sales
+      </router-link>
+    </div>
 
-    <BaseButton type="submit" class="w-full">
-      {{ isEdit ? 'Update' : 'Simpan' }}
-    </BaseButton>
-  </form>
+    <SalesTable :data="salesList" />
+  </div>
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
-import BaseInput from '@/components/common/BaseInput.vue'
-import BaseButton from '@/components/common/BaseButton.vue'
+import { ref, onMounted } from 'vue'
+import SalesTable from '@/components/admin/SalesTable.vue'
+import { getSales } from '@/services/sales.service'
 
-const props = defineProps({
-  modelValue: Object,
-  isEdit: Boolean
+const salesList = ref([])
+
+onMounted(async () => {
+  salesList.value = await getSales()
 })
-
-const emit = defineEmits(['submit'])
-
-const form = reactive({
-  nama: '',
-  noTelp: '',
-  alamat: ''
-})
-
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (val) Object.assign(form, val)
-  },
-  { immediate: true }
-)
-
-const submit = () => {
-  emit('submit', { ...form })
-}
 </script>
