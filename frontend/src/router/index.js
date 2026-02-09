@@ -25,7 +25,8 @@ import SupplierEdit from '@/views/admin/SupplierEdit.vue'
 import Register from '@/views/auth/Register.vue'
 import Customer from '@/views/admin/Customer.vue'
 import CustomerDetail from '@/views/admin/CustomerDetail.vue'
-
+import CustomerProfile from '@/views/customer/Profile.vue'
+import CustomerEdit from '@/views/customer/CustomerEdit.vue'
 
 
 
@@ -107,7 +108,9 @@ const routes = [
       role: 'CUSTOMER'
     },
     children: [
-      { path: 'mobil', name: 'customer-mobil', component: MobilList }
+      { path: 'mobil', name: 'customer-mobil', component: MobilList },
+      {path: 'profile',name: 'customer-profile',component: CustomerProfile},
+      { path: 'profile/edit/:id', name: 'customer-profile-edit', component: CustomerEdit }
     ]
   },
 

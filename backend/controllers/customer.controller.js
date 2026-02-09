@@ -1,29 +1,25 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
-
 exports.getProfile = async (req, res) => {
-  try {
-    const customerId = req.user.id
+  const customer = await prisma.customer.findUnique({
+    where: { id: req.user.id }
+  })
+  res.json(customer)
+}
 
-    const customer = await prisma.customer.findUnique({
-      where: { id: customerId },
-      select: {
-        id: true,
-        nama: true,
-        email: true,
-        noTelp: true,
-        alamat: true,
-        createdAt: true
-      }
-    })
+exports.getAll = async (req, res) => {
+  const customers = await prisma.customer.findMany({
+    orderBy: { createdAt: 'desc' }
+  })
+  res.json(customers)
+}
 
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer tidak ditemukan' })
-    }
+exports.getById = async (req, res) => {
+  const customer = await prisma.customer.findUnique({
+    where: { id: Number(req.params.id) }
+  })
 
-    res.json(customer)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Gagal mengambil profile' })
+  if (!customer) {
+    return res.status(404).json({ message: 'Customer tidak ditemukan' })
   }
+
+  res.json(customer)
 }

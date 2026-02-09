@@ -12,6 +12,11 @@
     <p class="menu-title">Menu</p>
     <ul class="menu">
       <li>
+        <RouterLink to="/customer/profile" class="nav">
+          Profil
+        </RouterLink>
+      </li>
+      <li>
         <RouterLink to="/customer/mobil" class="nav">
           Mobil
         </RouterLink>
