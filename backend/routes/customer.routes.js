@@ -1,7 +1,11 @@
-// customer.routes.js
 const express = require('express')
 const router = express.Router()
-const controller = require('../controllers/customer.controller')
+
 const auth = require('../middlewares/auth.middleware')
-router.get('/', auth, controller.getAll)
+const { onlyCustomer } = require('../middlewares/role.middleware')
+const customerController = require('../controllers/customer.controller')
+
+// 🔐 CUSTOMER PROFILE
+router.get('/me', auth, onlyCustomer, customerController.getProfile)
+
 module.exports = router
