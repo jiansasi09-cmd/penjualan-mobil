@@ -22,6 +22,10 @@ import MobilDetail from '@/views/admin/MobilDetail.vue'
 import SupplierAdd from '@/views/admin/SupplierAdd.vue'
 import SupplierDetail from '@/views/admin/SupplierDetail.vue'
 import SupplierEdit from '@/views/admin/SupplierEdit.vue'
+import Register from '@/views/auth/Register.vue'
+import Customer from '@/views/admin/Customer.vue'
+import CustomerDetail from '@/views/admin/CustomerDetail.vue'
+
 
 
 
@@ -53,6 +57,11 @@ const routes = [
     path: '/login',
     component: Login
   },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register
+  },
 
   // ================= ADMIN =================
   {
@@ -77,13 +86,13 @@ const routes = [
       {path: 'supplier/detail/:id',name: 'admin-supplier-detail',component: SupplierDetail,props: true},
       {path: 'supplier/edit/:id',name: 'admin-supplier-edit',component: SupplierEdit,props: true},
 
-
+      {path: 'customer',name: 'admin-customer',component: Customer},
+      {path: 'customer/detail/:id',name: 'admin-customer-detail',component: CustomerDetail},
 
       { path: 'pembelian', name: 'admin-pembelian', component: Pembelian },
       { path: 'penjualan', name: 'admin-penjualan', component: Penjualan },
       { path: 'pembayaran', name: 'admin-pembayaran', component: Pembayaran },
-      {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail
-}
+      {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail}
 
       
     ]

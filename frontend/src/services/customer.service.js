@@ -1,3 +1,13 @@
 import api from './api'
-export const getCustomer = () => api.get('/customer')
-export const createCustomer = (d) => api.post('/customer', d)
+
+// ambil semua customer (ADMIN)
+export const getCustomers = async () => {
+  const res = await api.get('/admin/customers')
+  return res.data
+}
+
+// ambil detail customer by id (ADMIN)
+export const getCustomerById = async (id) => {
+  const res = await api.get(`/admin/customers/${id}`)
+  return res.data
+}

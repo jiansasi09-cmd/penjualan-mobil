@@ -15,6 +15,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import SupplierTable from '@/components/admin/SupplierTable.vue'

@@ -4,7 +4,19 @@
       @submit.prevent="submit"
       class="bg-white p-6 rounded-lg shadow w-96 space-y-4"
     >
-      <h2 class="text-2xl font-bold text-center">Login</h2>
+      <h2 class="text-2xl font-bold text-center">Register</h2>
+
+      <!-- Nama -->
+      <div>
+        <label class="text-sm text-gray-600">Nama</label>
+        <input
+          v-model="form.nama"
+          type="text"
+          placeholder="Nama lengkap"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+          required
+        />
+      </div>
 
       <!-- Email -->
       <div>
@@ -15,6 +27,29 @@
           placeholder="email@example.com"
           class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
           required
+        />
+      </div>
+
+      <!-- No Telp -->
+      <div>
+        <label class="text-sm text-gray-600">No Telp</label>
+        <input
+          v-model="form.noTelp"
+          type="text"
+          placeholder="08xxxxxxxxxx"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+          required
+        />
+      </div>
+
+      <!-- Alamat -->
+      <div>
+        <label class="text-sm text-gray-600">Alamat</label>
+        <textarea
+          v-model="form.alamat"
+          placeholder="Alamat lengkap (opsional)"
+          rows="2"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"
         />
       </div>
 
@@ -39,48 +74,55 @@
       <button
         class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
       >
-        Login
+        Register
       </button>
 
-      <!-- Register link -->
+      <!-- Login link -->
       <p class="text-sm text-center text-gray-600">
-        Belum punya akun?
+        Sudah punya akun?
         <RouterLink
-          to="/register"
+          to="/login"
           class="text-blue-600 hover:underline font-medium"
         >
-          Daftar di sini
+          Login
         </RouterLink>
       </p>
     </form>
   </div>
 </template>
+
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { login } from '@/services/auth.service'
+import { register, login } from '@/services/auth.service'
 
 const router = useRouter()
 const error = ref('')
 
 const form = reactive({
+  nama: '',
   email: '',
-  password: ''
+  password: '',
+  noTelp: '',
+  alamat:''
 })
 
 const submit = async () => {
   error.value = ''
   try {
-    const data = await login(form)
-    const role = data.user.role
+    // 1️⃣ register
+    await register(form)
 
-    if (['ADMIN', 'SALES', 'OWNER'].includes(role)) {
-      router.replace('/admin/dashboard')
-    } else {
-      router.replace('/customer/mobil')
-    }
+    // 2️⃣ auto login
+    const data = await login({
+      email: form.email,
+      password: form.password
+    })
+
+    // 3️⃣ redirect customer
+    router.replace('/customer/mobil')
   } catch (err) {
-    error.value = err.response?.data?.message || 'Login gagal'
+    error.value = err.response?.data?.message || 'Register gagal'
   }
 }
 </script>
