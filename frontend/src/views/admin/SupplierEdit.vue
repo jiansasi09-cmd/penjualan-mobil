@@ -15,6 +15,8 @@
 <script setup>
 import { reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import BaseInput from '@/components/common/BaseInput.vue'
+import BaseButton from '@/components/common/BaseButton.vue'
 import { getSupplierById, updateSupplier } from '@/services/supplier.service'
 
 const route = useRoute()
@@ -27,7 +29,8 @@ const form = reactive({
 })
 
 onMounted(async () => {
-  Object.assign(form, await getSupplierById(route.params.id))
+  const data = await getSupplierById(route.params.id)
+  Object.assign(form, data)
 })
 
 const submit = async () => {

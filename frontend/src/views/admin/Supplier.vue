@@ -10,26 +10,14 @@
       </RouterLink>
     </div>
 
-    <BaseTable
-      :headers="['Nama', 'No Telp', 'Alamat', 'Aksi']"
-      :keys="['nama', 'noTelp', 'alamat']"
-      :data="supplier"
-    >
-      <template #aksi="{ item }">
-        <RouterLink
-          :to="`/admin/supplier/edit/${item.id}`"
-          class="text-blue-600 mr-2"
-        >
-          Edit
-        </RouterLink>
-      </template>
-    </BaseTable>
+    <!-- Panggil komponen tabel -->
+    <SupplierTable :data="supplier" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import BaseTable from '@/components/common/BaseTable.vue'
+import SupplierTable from '@/components/admin/SupplierTable.vue'
 import { getSupplier } from '@/services/supplier.service'
 
 const supplier = ref([])

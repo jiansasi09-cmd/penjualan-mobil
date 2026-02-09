@@ -19,6 +19,12 @@ import Pembelian from '@/views/admin/Pembelian.vue'
 import Penjualan from '@/views/admin/Penjualan.vue'
 import Pembayaran from '@/views/admin/Pembayaran.vue'
 import MobilDetail from '@/views/admin/MobilDetail.vue'
+import SupplierAdd from '@/views/admin/SupplierAdd.vue'
+import SupplierDetail from '@/views/admin/SupplierDetail.vue'
+import SupplierEdit from '@/views/admin/SupplierEdit.vue'
+
+
+
 
 
 // ================= CUSTOMER VIEWS =================
@@ -65,8 +71,13 @@ const routes = [
 
       { path: 'sales', name: 'admin-sales', component: Sales },
       { path: 'sales/add', name: 'admin-sales-add', component: SalesAdd },
+      
+      {path: 'supplier',name: 'admin-supplier',component: Supplier},
+      {path: 'supplier/add',name: 'admin-supplier-add',component: SupplierAdd},
+      {path: 'supplier/detail/:id',name: 'admin-supplier-detail',component: SupplierDetail,props: true},
+      {path: 'supplier/edit/:id',name: 'admin-supplier-edit',component: SupplierEdit,props: true},
 
-      { path: 'supplier', name: 'admin-supplier', component: Supplier },
+
 
       { path: 'pembelian', name: 'admin-pembelian', component: Pembelian },
       { path: 'penjualan', name: 'admin-penjualan', component: Penjualan },
