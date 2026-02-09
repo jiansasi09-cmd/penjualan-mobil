@@ -18,9 +18,12 @@ model User {
   role      Role
   createdAt DateTime @default(now())
 
-  penjualan          Penjualan[] // hanya untuk SALES
-  pembayaranCustomer PembayaranCustomer[] // optional, jika perlu akses
+  penjualan          Penjualan[]
+  pembayaranCustomer PembayaranCustomer[]
+
+  purchaseRequests   PurchaseRequest[] // ✅ TAMBAH INI
 }
+
 
 enum Role {
   ADMIN
@@ -119,8 +122,10 @@ model Supplier {
   alamat    String
   createdAt DateTime @default(now())
 
-  pembelian Pembelian[]
+  pembelian        Pembelian[]
+  purchaseRequests PurchaseRequest[] // ✅ TAMBAH INI
 }
+
 
 //////////////////////////////////////////////////
 // FAVORIT / BOOKING / PESANAN / PEMBAYARAN
@@ -290,23 +295,32 @@ enum ActivityType {
 }
 
 model PurchaseRequest {
-  id        Int      @id @default(autoincrement())
-  tanggal   DateTime @default(now())
-  status    PRStatus @default(PENDING)
-  createdAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  prNumber    String    @unique
+  tanggal     DateTime  @default(now())
+  status      PRStatus  @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  items PurchaseRequestItem[]
+  supplierId  Int
+  supplier    Supplier  @relation(fields: [supplierId], references: [id])
+  createdById Int
+  createdBy   User      @relation(fields: [createdById], references: [id])
+  items       PurchaseRequestItem[]
+
+  @@map("purchase_requests")
 }
 
 model PurchaseRequestItem {
-  id      Int @id @default(autoincrement())
-  prId    Int
-  mobilId Int
-  qty     Int
-
-  pr    PurchaseRequest @relation(fields: [prId], references: [id])
-  mobil Mobil           @relation(fields: [mobilId], references: [id])
+  id       Int     @id @default(autoincrement())
+  prId     Int
+  pr       PurchaseRequest @relation(fields: [prId], references: [id])
+  mobilId  Int
+  mobil    Mobil   @relation(fields: [mobilId], references: [id])
+  qty      Int
+  createdAt DateTime @default(now())
 }
+
 
 model PurchaseOrder {
   id        Int      @id @default(autoincrement())

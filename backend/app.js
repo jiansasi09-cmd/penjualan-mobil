@@ -30,6 +30,10 @@ app.use('/api/pesanan', require('./routes/pesanan.routes'))
 app.use('/api/pembelian', require('./routes/pembelian.routes'))
 app.use('/api/penjualan', require('./routes/penjualan.routes'))
 
+// ================= PURCHASING =================
+app.use('/api/purchase-request', require('./routes/purchaseRequest.routes'))
+
+
 // ================= PEMBAYARAN =================
 app.use('/api/pembayaran-customer', require('./routes/pembayaranCustomer.routes'))
 app.use('/api/pembayaran', require('./routes/pembayaran.routes'))
