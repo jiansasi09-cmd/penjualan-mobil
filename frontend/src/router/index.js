@@ -28,10 +28,9 @@ import Customer from '@/views/admin/Customer.vue'
 import CustomerDetail from '@/views/admin/CustomerDetail.vue'
 import CustomerProfile from '@/views/customer/Profile.vue'
 import CustomerEdit from '@/views/customer/CustomerEdit.vue'
-
-
-
-
+import PurchaseRequest from '@/views/admin/PurchaseRequest.vue'
+import PurchaseRequestAdd from '@/views/admin/PurchaseRequestAdd.vue'
+import PurchaseRequestEdit from '@/views/admin/PurchaseRequestEdit.vue'
 
 // ================= CUSTOMER VIEWS =================
 import MobilList from '@/views/customer/MobilList.vue'
@@ -96,9 +95,11 @@ const routes = [
       { path: 'pembelian', name: 'admin-pembelian', component: Pembelian },
       { path: 'penjualan', name: 'admin-penjualan', component: Penjualan },
       { path: 'pembayaran', name: 'admin-pembayaran', component: Pembayaran },
-      {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail}
+      {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail},
 
-      
+      {path: 'purchase-request',name: 'admin-purchase-request',component: PurchaseRequest},
+      {path: 'purchase-request/add',name: 'admin-purchase-request-add',component: PurchaseRequestAdd},
+      {path: 'purchase-request/edit/:id',name: 'admin-purchase-request-edit', component: PurchaseRequestEdit,props: true}
     ]
   },
 
