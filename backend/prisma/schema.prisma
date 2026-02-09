@@ -21,9 +21,8 @@ model User {
   penjualan          Penjualan[]
   pembayaranCustomer PembayaranCustomer[]
 
-  purchaseRequests   PurchaseRequest[] // ✅ TAMBAH INI
+  purchaseRequests PurchaseRequest[] // ✅ TAMBAH INI
 }
-
 
 enum Role {
   ADMIN
@@ -48,7 +47,6 @@ model Customer {
   pesanan    Pesanan[]
   pembayaran PembayaranCustomer[]
 }
-
 
 //////////////////////////////////////////////////
 // MASTER DATA SHOWROOM
@@ -124,8 +122,8 @@ model Supplier {
 
   pembelian        Pembelian[]
   purchaseRequests PurchaseRequest[] // ✅ TAMBAH INI
+  purchaseOrders   PurchaseOrder[] // ✅
 }
-
 
 //////////////////////////////////////////////////
 // FAVORIT / BOOKING / PESANAN / PEMBAYARAN
@@ -277,7 +275,9 @@ enum PRStatus {
 }
 
 enum POStatus {
-  AKTIF
+  DRAFT
+  DIKIRIM
+  DITERIMA
   SELESAI
   DIBATALKAN
 }
@@ -295,51 +295,60 @@ enum ActivityType {
 }
 
 model PurchaseRequest {
-  id          Int       @id @default(autoincrement())
-  prNumber    String    @unique
-  tanggal     DateTime  @default(now())
-  status      PRStatus  @default(PENDING)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  prNumber  String   @unique
+  tanggal   DateTime @default(now())
+  status    PRStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  supplierId  Int
-  supplier    Supplier  @relation(fields: [supplierId], references: [id])
-  createdById Int
-  createdBy   User      @relation(fields: [createdById], references: [id])
-  items       PurchaseRequestItem[]
+  supplierId    Int
+  supplier      Supplier              @relation(fields: [supplierId], references: [id])
+  createdById   Int
+  createdBy     User                  @relation(fields: [createdById], references: [id])
+  items         PurchaseRequestItem[]
+  purchaseOrder PurchaseOrder? // ✅ 1 PR → 1 PO (optional)
 
   @@map("purchase_requests")
 }
 
 model PurchaseRequestItem {
-  id       Int     @id @default(autoincrement())
-  prId     Int
-  pr       PurchaseRequest @relation(fields: [prId], references: [id])
-  mobilId  Int
-  mobil    Mobil   @relation(fields: [mobilId], references: [id])
-  qty      Int
-  createdAt DateTime @default(now())
+  id        Int             @id @default(autoincrement())
+  prId      Int
+  pr        PurchaseRequest @relation(fields: [prId], references: [id])
+  mobilId   Int
+  mobil     Mobil           @relation(fields: [mobilId], references: [id])
+  qty       Int
+  createdAt DateTime        @default(now())
 }
 
-
 model PurchaseOrder {
-  id        Int      @id @default(autoincrement())
-  tanggal   DateTime @default(now())
-  status    POStatus @default(AKTIF)
-  createdAt DateTime @default(now())
+  id      Int      @id @default(autoincrement())
+  kode    String   @unique
+  tanggal DateTime @default(now())
+  status  POStatus @default(DRAFT)
 
-  items PurchaseOrderItem[]
+  // 1 PR -> 1 PO
+  purchaseRequestId Int             @unique
+  purchaseRequest   PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
 
-  // RELASI BARU (WAJIB)
+  supplierId Int
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  items    PurchaseOrderItem[]
   invoices Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PurchaseOrderItem {
-  id      Int   @id @default(autoincrement())
-  poId    Int
-  mobilId Int
-  qty     Int
-  harga   Float
+  id       Int   @id @default(autoincrement())
+  poId     Int
+  mobilId  Int
+  qty      Int
+  harga    Float
+  subtotal Float
 
   po    PurchaseOrder @relation(fields: [poId], references: [id])
   mobil Mobil         @relation(fields: [mobilId], references: [id])
