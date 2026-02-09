@@ -91,3 +91,35 @@ exports.delete = async (req, res) => {
     res.status(500).json({ message: 'Gagal hapus PR' })
   }
 }
+exports.approvePR = async (req, res) => {
+  try {
+    const prId = Number(req.params.id)
+
+    // Ambil PR dulu
+    const pr = await prisma.purchaseRequest.findUnique({
+      where: { id: prId }
+    })
+
+    if (!pr) {
+      return res.status(404).json({ message: 'PR tidak ditemukan' })
+    }
+
+    if (pr.status !== 'PENDING') {
+      return res.status(400).json({ message: 'PR sudah diproses sebelumnya' })
+    }
+
+    // Update status menjadi APPROVED
+    const updatedPR = await prisma.purchaseRequest.update({
+      where: { id: prId },
+      data: { status: 'APPROVED' }
+    })
+
+    res.json({
+      message: 'PR berhasil di-approve',
+      pr: updatedPR
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Gagal approve PR' })
+  }
+}

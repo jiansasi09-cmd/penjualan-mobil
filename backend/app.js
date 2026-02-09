@@ -29,9 +29,8 @@ app.use('/api/booking', require('./routes/booking.routes'))
 app.use('/api/pesanan', require('./routes/pesanan.routes'))
 app.use('/api/pembelian', require('./routes/pembelian.routes'))
 app.use('/api/penjualan', require('./routes/penjualan.routes'))
-
-// ================= PURCHASING =================
 app.use('/api/purchase-request', require('./routes/purchaseRequest.routes'))
+app.use('/api/purchase-order', require('./routes/purchaseOrder.routes'))
 
 
 // ================= PEMBAYARAN =================

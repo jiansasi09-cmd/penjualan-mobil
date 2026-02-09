@@ -43,7 +43,7 @@ exports.getDashboard = async (req, res) => {
         where: { status: 'PENDING' }
       }),
       prisma.purchaseOrder.count({
-        where: { status: 'AKTIF' }
+        where: { status: 'DRAFT' } // ✅ ganti 'AKTIF' jadi 'DRAFT'
       }),
       prisma.invoice.count({
         where: { status: 'BELUM_LUNAS' }
@@ -58,7 +58,7 @@ exports.getDashboard = async (req, res) => {
     // ======================
     const purchasing = {
       pr_pending: pendingPR,
-      po_aktif: unreceivedPO,
+      po_draft: unreceivedPO, // ganti key biar jelas
       invoice_open: unpaidInvoice
     }
 
