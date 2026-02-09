@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const controller = require('../controllers/sales.controller')
+const salesController = require('../controllers/sales.controller')
 
-router.get('/', controller.getAll)
-router.get('/:id', controller.getById)
-router.post('/', controller.create)
-router.put('/:id', controller.update)
-router.delete('/:id', controller.remove)
+// ADMIN PANEL
+router.get('/', salesController.getAll)
+router.get('/:id', salesController.getById)
+router.post('/', salesController.create)
+router.put('/:id', salesController.update)
+router.delete('/:id', salesController.remove)
 
 module.exports = router

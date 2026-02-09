@@ -21,6 +21,7 @@ app.use('/api/admin/customers', require('./routes/admin.customer.routes'))
 app.use('/api/mobil', require('./routes/mobil.routes'))
 app.use('/api/supplier', require('./routes/supplier.routes'))
 app.use('/api/sales', require('./routes/sales.routes'))
+app.use('/api/admin/sales', require('./routes/admin.sales.routes'))
 
 // ================= TRANSAKSI =================
 app.use('/api/favorit', require('./routes/favorit.routes'))
