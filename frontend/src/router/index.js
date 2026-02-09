@@ -31,6 +31,9 @@ import CustomerEdit from '@/views/customer/CustomerEdit.vue'
 import PurchaseRequest from '@/views/admin/PurchaseRequest.vue'
 import PurchaseRequestAdd from '@/views/admin/PurchaseRequestAdd.vue'
 import PurchaseRequestEdit from '@/views/admin/PurchaseRequestEdit.vue'
+import PurchaseOrder from '@/views/admin/PurchaseOrder.vue'
+import PurchaseOrderAdd from '@/views/admin/PurchaseOrderAdd.vue'
+import PurchaseOrderEdit from '@/views/admin/PurchaseOrderEdit.vue'
 
 // ================= CUSTOMER VIEWS =================
 import MobilList from '@/views/customer/MobilList.vue'
@@ -99,7 +102,13 @@ const routes = [
 
       {path: 'purchase-request',name: 'admin-purchase-request',component: PurchaseRequest},
       {path: 'purchase-request/add',name: 'admin-purchase-request-add',component: PurchaseRequestAdd},
-      {path: 'purchase-request/edit/:id',name: 'admin-purchase-request-edit', component: PurchaseRequestEdit,props: true}
+      {path: 'purchase-request/edit/:id',name: 'admin-purchase-request-edit', component: PurchaseRequestEdit,props: true},
+
+      // ================= PURCHASE ORDER =================
+      {path: 'purchase-order',name: 'admin-purchase-order',component: PurchaseOrder},
+      {path: 'purchase-order/add',name: 'admin-purchase-order-add',component: PurchaseOrderAdd},
+      {path: 'purchase-order/edit/:id',name: 'admin-purchase-order-edit',component: PurchaseOrderEdit,props: true},
+
     ]
   },
 
