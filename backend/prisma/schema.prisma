@@ -75,13 +75,14 @@ model Mobil {
   updatedAt DateTime @updatedAt
 
   // Relasi (tetap)
-  prItems    PurchaseRequestItem[]
-  poItems    PurchaseOrderItem[]
-  detailJual DetailPenjualan[]
-  detailBeli DetailPembelian[]
-  favorit    Favorit[]
-  booking    Booking[]
-  pesanan    Pesanan[]
+  prItems          PurchaseRequestItem[]
+  poItems          PurchaseOrderItem[]
+  detailJual       DetailPenjualan[]
+  detailBeli       DetailPembelian[]
+  favorit          Favorit[]
+  booking          Booking[]
+  pesanan          Pesanan[]
+  GoodsReceiptItem GoodsReceiptItem[]
 }
 
 enum Transmisi {
@@ -338,6 +339,8 @@ model PurchaseOrder {
   items    PurchaseOrderItem[]
   invoices Invoice[]
 
+  goodsReceipts GoodsReceipt[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -369,4 +372,35 @@ model ActivityLog {
   type      ActivityType
   message   String
   createdAt DateTime     @default(now())
+}
+
+enum GRStatus {
+  DRAFT
+  DITERIMA
+  DIBATALKAN
+}
+
+model GoodsReceipt {
+  id      Int      @id @default(autoincrement())
+  kode    String   @unique
+  tanggal DateTime @default(now())
+  status  GRStatus @default(DRAFT)
+
+  poId Int
+  po   PurchaseOrder @relation(fields: [poId], references: [id])
+
+  items GoodsReceiptItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GoodsReceiptItem {
+  id        Int @id @default(autoincrement())
+  grId      Int
+  mobilId   Int
+  qtyTerima Int
+
+  gr    GoodsReceipt @relation(fields: [grId], references: [id])
+  mobil Mobil        @relation(fields: [mobilId], references: [id])
 }
