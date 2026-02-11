@@ -1,53 +1,75 @@
-<template #action="{ row }">
-  <div class="flex gap-3 items-center">
-    <router-link
-      :to="`/admin/goods-receipt/detail/${row.id}`"
-      class="text-gray-600 hover:underline"
-    >
-      Detail
-    </router-link>
+<template>
+  <BaseTable
+    :headers="HEADERS"
+    :keys="KEYS"
+    :data="data"
+  >
+    <!-- STATUS -->
+    <template #cell-status="{ value }">
+      <span
+        :class="{
+          'text-yellow-600 font-semibold': value === 'DRAFT',
+          'text-green-600 font-semibold': value === 'DITERIMA',
+          'text-red-600 font-semibold': value === 'DIBATALKAN'
+        }"
+      >
+        {{ value }}
+      </span>
+    </template>
 
-    <router-link
-      :to="`/admin/goods-receipt/edit/${row.id}`"
-      class="text-blue-600 hover:underline"
-    >
-      Edit
-    </router-link>
+    <!-- ACTION -->
+      <template #action="{ row }">
+        <div class="flex gap-4 items-center text-lg">
 
-    <button
-      class="text-red-600 hover:underline"
-      @click="onDelete(row)"
-    >
-      Hapus
-    </button>
-  </div>
+          <!-- 🔍 Detail -->
+          <router-link
+            :to="`/admin/goods-receipt/detail/${row.id}`"
+            class="text-gray-600 hover:scale-110 cursor-pointer"
+          >
+            🔍
+          </router-link>
+
+          <!-- ✏ Edit -->
+          <router-link
+            :to="`/admin/goods-receipt/edit/${row.id}`"
+            class="text-blue-600 hover:scale-110 cursor-pointer"
+          >
+            ✏
+          </router-link>
+
+          <!-- 🧾 Invoice -->
+          <router-link
+            v-if="row.status === 'DITERIMA' && !row.hasInvoice"
+            :to="`/admin/purchase-invoice/create/${row.id}`"
+            class="text-green-600 hover:scale-110 cursor-pointer"
+          >
+            🧾
+          </router-link>
+
+          <!-- 🗑 Delete -->
+          <button
+            class="text-red-600 hover:scale-110 cursor-pointer"
+            @click="$emit('delete', row)"
+          >
+            🗑
+          </button>
+
+        </div>
+      </template>
+
+  </BaseTable>
 </template>
 
-
 <script setup>
-import { computed } from 'vue'
 import BaseTable from '@/components/common/BaseTable.vue'
 
-const emit = defineEmits(['delete']) // ✅ INI YANG KURANG
-
-const props = defineProps({
+defineProps({
   data: {
     type: Array,
     default: () => []
   }
 })
 
-const headers = ['Kode', 'PO', 'Tanggal']
-const keys = ['kode', 'poKode', 'tanggal']
-
-const formattedData = computed(() =>
-  props.data.map(gr => ({
-    id: gr.id,
-    kode: gr.kode || '-',
-    poKode: gr.po?.kode || '-',
-    tanggal: gr.createdAt
-      ? new Date(gr.createdAt).toLocaleDateString('id-ID')
-      : '-'
-  }))
-)
+const HEADERS = ['Kode GR', 'PO', 'Supplier', 'Tanggal', 'Status']
+const KEYS = ['kode', 'poKode', 'supplier', 'tanggal', 'status']
 </script>

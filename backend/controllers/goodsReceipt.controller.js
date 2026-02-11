@@ -51,23 +51,40 @@ exports.getByPO = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params
+
     const data = await prisma.goodsReceipt.findUnique({
       where: { id: Number(id) },
       include: {
-        po: true,
-        items: { include: { mobil: true } }
+        po: {
+          include: {
+            supplier: true,
+            items: true   // ✅ INI YANG KURANG
+          }
+        },
+        items: {
+          include: {
+            mobil: true
+          }
+        }
       }
     })
 
     if (!data) {
-      return res.status(404).json({ message: 'Goods Receipt tidak ditemukan' })
+      return res.status(404).json({
+        message: 'Goods Receipt tidak ditemukan'
+      })
     }
 
     res.json(data)
+
   } catch (err) {
-    res.status(500).json({ message: 'Gagal ambil detail GR' })
+    console.error(err)
+    res.status(500).json({
+      message: 'Gagal ambil detail GR'
+    })
   }
 }
+
 
 exports.createFromPO = async (req, res) => {
   try {

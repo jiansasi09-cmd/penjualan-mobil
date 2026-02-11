@@ -25,7 +25,7 @@ exports.getDashboard = async (req, res) => {
           }
         }
       }),
-      prisma.invoice.count({
+      prisma.purchaseInvoice.count({ // ✅ FIXED
         where: { status: 'BELUM_LUNAS' }
       })
     ])
@@ -35,7 +35,7 @@ exports.getDashboard = async (req, res) => {
     // ======================
     const [
       pendingPR,
-      unreceivedPO,
+      draftPO,
       unpaidInvoice,
       lowStock
     ] = await Promise.all([
@@ -43,9 +43,9 @@ exports.getDashboard = async (req, res) => {
         where: { status: 'PENDING' }
       }),
       prisma.purchaseOrder.count({
-        where: { status: 'DRAFT' } // ✅ ganti 'AKTIF' jadi 'DRAFT'
+        where: { status: 'DRAFT' }
       }),
-      prisma.invoice.count({
+      prisma.purchaseInvoice.count({ // ✅ FIXED
         where: { status: 'BELUM_LUNAS' }
       }),
       prisma.mobil.count({
@@ -58,7 +58,7 @@ exports.getDashboard = async (req, res) => {
     // ======================
     const purchasing = {
       pr_pending: pendingPR,
-      po_draft: unreceivedPO, // ganti key biar jelas
+      po_draft: draftPO,
       invoice_open: unpaidInvoice
     }
 
@@ -75,7 +75,7 @@ exports.getDashboard = async (req, res) => {
     })
 
     // ======================
-    // ACTIVITY LOG (simple MVP)
+    // ACTIVITY LOG
     // ======================
     const activities = await prisma.activityLog.findMany({
       orderBy: { createdAt: 'desc' },
@@ -100,7 +100,7 @@ exports.getDashboard = async (req, res) => {
 
       actions: {
         pending_pr: pendingPR,
-        unreceived_po: unreceivedPO,
+        po_draft: draftPO,
         unpaid_invoice: unpaidInvoice,
         low_stock: lowStock
       },
@@ -120,7 +120,7 @@ exports.getDashboard = async (req, res) => {
   } catch (error) {
     console.error('Dashboard error:', error)
     res.status(500).json({
-      message: 'Gagal mengambil data dashboard'
+      message: error.message
     })
   }
 }

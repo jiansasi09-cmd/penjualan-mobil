@@ -83,6 +83,10 @@ model Mobil {
   booking          Booking[]
   pesanan          Pesanan[]
   GoodsReceiptItem GoodsReceiptItem[]
+  purchaseInvoiceItems PurchaseInvoiceItem[]
+  stockMutations StockMutation[]
+
+
 }
 
 enum Transmisi {
@@ -337,7 +341,6 @@ model PurchaseOrder {
   supplier   Supplier @relation(fields: [supplierId], references: [id])
 
   items    PurchaseOrderItem[]
-  invoices Invoice[]
 
   goodsReceipts GoodsReceipt[]
 
@@ -357,15 +360,33 @@ model PurchaseOrderItem {
   mobil Mobil         @relation(fields: [mobilId], references: [id])
 }
 
-model Invoice {
+model PurchaseInvoice {
   id      Int           @id @default(autoincrement())
-  poId    Int
+  nomor   String        @unique
+  tanggal DateTime      @default(now())
   total   Float
   status  InvoiceStatus @default(BELUM_LUNAS)
-  tanggal DateTime      @default(now())
 
-  po PurchaseOrder @relation(fields: [poId], references: [id])
+  grId Int  @unique
+  gr   GoodsReceipt @relation(fields: [grId], references: [id])
+
+  items PurchaseInvoiceItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+model PurchaseInvoiceItem {
+  id        Int   @id @default(autoincrement())
+  invoiceId Int
+  mobilId   Int
+  qty       Int
+  harga     Float
+  subtotal  Float
+
+  invoice PurchaseInvoice @relation(fields: [invoiceId], references: [id])
+  mobil   Mobil           @relation(fields: [mobilId], references: [id])
+}
+
 
 model ActivityLog {
   id        Int          @id @default(autoincrement())
@@ -391,6 +412,8 @@ model GoodsReceipt {
 
   items GoodsReceiptItem[]
 
+  invoice PurchaseInvoice? // ✅ tambah ini
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -403,4 +426,20 @@ model GoodsReceiptItem {
 
   gr    GoodsReceipt @relation(fields: [grId], references: [id])
   mobil Mobil        @relation(fields: [mobilId], references: [id])
+}
+model StockMutation {
+  id        Int      @id @default(autoincrement())
+  mobilId   Int
+  qty       Int
+  type      MutationType
+  reference String?
+  createdAt DateTime @default(now())
+
+  mobil Mobil @relation(fields: [mobilId], references: [id])
+}
+
+enum MutationType {
+  IN
+  OUT
+  ADJUSTMENT
 }

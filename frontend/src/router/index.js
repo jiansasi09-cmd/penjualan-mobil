@@ -39,6 +39,10 @@ import GoodsReceiptIndex from '@/views/admin/GoodsReceiptIndex.vue'
 import GoodsReceiptCreate from '@/views/admin/GoodsReceiptCreate.vue'
 import GoodsReceiptDetail from '@/views/admin/GoodsReceiptDetail.vue'
 import GoodsReceiptEdit from '@/views/admin/GoodsReceiptEdit.vue'
+// ================= PURCHASE INVOICE =================
+import PurchaseInvoiceIndex from '@/views/admin/PurchaseInvoiceIndex.vue'
+import PurchaseInvoiceCreate from '@/views/admin/PurchaseInvoiceCreate.vue'
+import PurchaseInvoiceDetail from '@/views/admin/PurchaseInvoiceDetail.vue'
 
 
 
@@ -119,10 +123,11 @@ const routes = [
       {path: 'goods-receipt',name: 'GoodsReceiptIndex',component: GoodsReceiptIndex},
       {path: 'goods-receipt/create',name: 'GoodsReceiptCreate',component: GoodsReceiptCreate},
       {path: 'goods-receipt/detail/:id',name: 'GoodsReceiptDetail', component: GoodsReceiptDetail},
-      {path: 'goods-receipt/edit/:id',name: 'GoodsReceiptEdit',component: GoodsReceiptEdit}
+      {path: 'goods-receipt/edit/:id',name: 'GoodsReceiptEdit',component: GoodsReceiptEdit},
 
-
-
+      {path: '/admin/purchase-invoice',name: 'PurchaseInvoiceIndex',component: PurchaseInvoiceIndex},
+      {path: '/admin/purchase-invoice/create/:grId',name: 'PurchaseInvoiceCreate',component: PurchaseInvoiceCreate},
+      {path: '/admin/purchase-invoice/detail/:id',name: 'PurchaseInvoiceDetail',component: PurchaseInvoiceDetail}
 
     ]
   },

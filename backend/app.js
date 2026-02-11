@@ -32,6 +32,7 @@ app.use('/api/penjualan', require('./routes/penjualan.routes'))
 app.use('/api/purchase-request', require('./routes/purchaseRequest.routes'))
 app.use('/api/purchase-order', require('./routes/purchaseOrder.routes'))
 app.use('/api/goods-receipt', require('./routes/goodsReceipt.routes'))
+app.use('/api/purchase-invoice', require('./routes/purchaseInvoice.routes'))
 
 
 
