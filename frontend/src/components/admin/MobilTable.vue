@@ -11,8 +11,7 @@
       'KM',
       'Harga Jual',
       'Stok',
-      'Status',
-      'Aksi'
+      'Status'
     ]"
     :keys="[
       'nama',

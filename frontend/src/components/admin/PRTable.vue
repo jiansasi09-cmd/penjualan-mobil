@@ -1,6 +1,6 @@
 <template>
   <BaseTable
-    :headers="['PR Number', 'Supplier', 'Tanggal', 'Status', 'Aksi']"
+    :headers="['PR Number', 'Supplier', 'Tanggal', 'Status']"
     :keys="['prNumber', 'supplier', 'tanggal', 'status']"
     :data="formattedData"
   >

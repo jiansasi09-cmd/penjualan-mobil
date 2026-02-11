@@ -5,12 +5,13 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const openMenu = ref({
-  master: true,
+  master: false,
   purchasing: false,
   inventory: false,
   sales: false,
   report: false
 })
+
 
 const toggle = (key) => {
   openMenu.value[key] = !openMenu.value[key]
@@ -51,7 +52,7 @@ const toggle = (key) => {
       <ul v-show="openMenu.purchasing" class="menu">
         <li><RouterLink to="/admin/purchase-request" class="nav">Purchase Request</RouterLink></li>
         <li><RouterLink to="/admin/purchase-order" class="nav">Purchase Order</RouterLink></li>
-        <li><RouterLink to="/admin/penerimaan-barang" class="nav">Penerimaan Barang</RouterLink></li>
+        <li><RouterLink to="/admin/goods-receipt" class="nav">Penerimaan Barang</RouterLink></li>
         <li><RouterLink to="/admin/purchase-invoice" class="nav">Purchase Invoice</RouterLink></li>
       </ul>
 

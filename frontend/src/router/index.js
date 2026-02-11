@@ -34,6 +34,13 @@ import PurchaseRequestEdit from '@/views/admin/PurchaseRequestEdit.vue'
 import PurchaseOrder from '@/views/admin/PurchaseOrder.vue'
 import PurchaseOrderAdd from '@/views/admin/PurchaseOrderAdd.vue'
 import PurchaseOrderEdit from '@/views/admin/PurchaseOrderEdit.vue'
+// ================= GOODS RECEIPT =================
+import GoodsReceiptIndex from '@/views/admin/GoodsReceiptIndex.vue'
+import GoodsReceiptCreate from '@/views/admin/GoodsReceiptCreate.vue'
+import GoodsReceiptDetail from '@/views/admin/GoodsReceiptDetail.vue'
+import GoodsReceiptEdit from '@/views/admin/GoodsReceiptEdit.vue'
+
+
 
 // ================= CUSTOMER VIEWS =================
 import MobilList from '@/views/customer/MobilList.vue'
@@ -108,6 +115,14 @@ const routes = [
       {path: 'purchase-order',name: 'admin-purchase-order',component: PurchaseOrder},
       {path: 'purchase-order/add',name: 'admin-purchase-order-add',component: PurchaseOrderAdd},
       {path: 'purchase-order/edit/:id',name: 'admin-purchase-order-edit',component: PurchaseOrderEdit,props: true},
+
+      {path: 'goods-receipt',name: 'GoodsReceiptIndex',component: GoodsReceiptIndex},
+      {path: 'goods-receipt/create',name: 'GoodsReceiptCreate',component: GoodsReceiptCreate},
+      {path: 'goods-receipt/detail/:id',name: 'GoodsReceiptDetail', component: GoodsReceiptDetail},
+      {path: 'goods-receipt/edit/:id',name: 'GoodsReceiptEdit',component: GoodsReceiptEdit}
+
+
+
 
     ]
   },
