@@ -2,47 +2,101 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 // ================= GET ALL PENJUALAN =================
+// ================= GET ALL PENJUALAN =================
 exports.getAll = async (req, res) => {
   try {
     const data = await prisma.penjualan.findMany({
       orderBy: { tanggal: 'desc' },
       include: {
-        detail: { include: { mobil: true } },
         sales: true,
         user: true,
-        salesOrder: true,
-        pembayaran: true
+
+        salesOrder: {
+          include: {
+            customer: true
+          }
+        },
+
+        detail: {
+          include: {
+            mobil: true
+          }
+        },
+
+        pembayaran: {
+          include: {
+            user: true // ✅ penting jika ada relasi user di pembayaran
+          },
+          orderBy: {
+            tanggal: 'desc'
+          }
+        }
       }
     })
 
     res.json(data)
+
   } catch (error) {
-    console.error('❌ GET PENJUALAN ERROR:', error)
-    res.status(500).json({ message: 'Gagal mengambil data penjualan' })
+    console.error('❌ GET PENJUALAN ERROR FULL:', error)
+
+    res.status(500).json({
+      message: error.message
+    })
   }
 }
+
 
 // ================= GET DETAIL PENJUALAN =================
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params
+
     const penjualan = await prisma.penjualan.findUnique({
       where: { id: Number(id) },
       include: {
-        detail: { include: { mobil: true } },
         sales: true,
         user: true,
-        salesOrder: true,
-        pembayaran: true
+
+        salesOrder: {
+          include: {
+            customer: true
+          }
+        },
+
+        detail: {
+          include: {
+            mobil: true
+          }
+        },
+
+        pembayaran: {
+          include: {
+            user: true
+          },
+          orderBy: {
+            tanggal: 'desc'
+          }
+        }
       }
     })
-    if (!penjualan) return res.status(404).json({ message: 'Penjualan tidak ditemukan' })
+
+    if (!penjualan) {
+      return res.status(404).json({
+        message: 'Penjualan tidak ditemukan'
+      })
+    }
+
     res.json(penjualan)
+
   } catch (error) {
     console.error('❌ GET DETAIL PENJUALAN ERROR:', error)
-    res.status(500).json({ message: 'Gagal mengambil detail penjualan' })
+
+    res.status(500).json({
+      message: error.message
+    })
   }
 }
+
 
 // ================= CREATE PENJUALAN =================
 exports.create = async (req, res) => {

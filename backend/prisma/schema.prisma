@@ -23,6 +23,7 @@ model User {
 
   purchaseRequests PurchaseRequest[] // ✅ TAMBAH INI
   salesOrders      SalesOrder[]
+  pembayaran Pembayaran[]
 }
 
 enum Role {
@@ -251,6 +252,8 @@ model Penjualan {
   tanggal DateTime @default(now())
   total   Float
 
+  status StatusPenjualan @default(UNPAID)
+
   salesOrderId Int        @unique
   salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id])
 
@@ -266,6 +269,7 @@ model Penjualan {
   createdAt DateTime @default(now())
 }
 
+
 model DetailPenjualan {
   id          Int   @id @default(autoincrement())
   penjualanId Int
@@ -277,6 +281,13 @@ model DetailPenjualan {
   penjualan Penjualan @relation(fields: [penjualanId], references: [id])
   mobil     Mobil     @relation(fields: [mobilId], references: [id])
 }
+
+enum StatusPenjualan {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
 
 model Pembelian {
   id         Int      @id @default(autoincrement())
@@ -303,12 +314,15 @@ model DetailPembelian {
 model Pembayaran {
   id          Int         @id @default(autoincrement())
   penjualanId Int
+  userId      Int?
   jumlah      Float
   metode      MetodeBayar
   tanggal     DateTime    @default(now())
 
   penjualan Penjualan @relation(fields: [penjualanId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id])
 }
+
 
 enum MetodeBayar {
   CASH

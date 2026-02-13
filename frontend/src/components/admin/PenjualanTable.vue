@@ -1,31 +1,59 @@
 <template>
   <BaseTable
-    :headers="['Nomor', 'Tanggal', 'Total', 'Sales']"
-    :keys="['nomor', 'tanggal', 'total', 'sales']"
+    :headers="['Nomor', 'Tanggal', 'Sales', 'Total', 'Status']"
+    :keys="['nomor', 'tanggal', 'sales', 'total', 'status']"
     :data="formattedData"
   >
+    <!-- STATUS SLOT -->
+    <template #status="{ row }">
+      <span
+        :class="getStatusClass(row.status)"
+        class="px-2 py-1 rounded text-xs font-semibold"
+      >
+        {{ row.status }}
+      </span>
+    </template>
+
+    <!-- ACTION SLOT -->
     <template #action="{ row }">
       <div class="flex gap-1">
+
+        <!-- DETAIL -->
         <RouterLink
           :to="`/admin/penjualan/${row.id}`"
-          class="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
         >
           Detail
         </RouterLink>
+
+        <!-- EDIT -->
         <RouterLink
           :to="`/admin/penjualan/${row.id}/edit`"
-          class="bg-green-500 text-white px-2 py-1 rounded text-xs"
+          class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
         >
           Edit
         </RouterLink>
+
+        <!-- BAYAR (FIXED) -->
+        <RouterLink
+          v-if="row.status !== 'PAID'"
+          :to="`/admin/pembayaran/create?penjualanId=${row.id}`"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-xs"
+        >
+          Bayar
+        </RouterLink>
+
+        <!-- HAPUS -->
         <button
           @click="$emit('delete', row.id)"
-          class="bg-red-500 text-white px-2 py-1 rounded text-xs"
+          class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
         >
           Hapus
         </button>
+
       </div>
     </template>
+
   </BaseTable>
 </template>
 
@@ -34,7 +62,6 @@ import BaseTable from '@/components/common/BaseTable.vue'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-// Tangkap props
 const props = defineProps({
   data: {
     type: Array,
@@ -42,14 +69,43 @@ const props = defineProps({
   }
 })
 
-// Buat computed agar format tanggal, total, dan sales rapi
+const formatRupiah = (value) => {
+  if (!value) return "Rp 0"
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0
+  }).format(value)
+}
+
 const formattedData = computed(() => {
   return props.data.map(d => ({
     id: d.id,
     nomor: d.nomor || `SALE-${d.id}`,
-    tanggal: d.tanggal ? new Date(d.tanggal).toLocaleDateString() : '-',
-    total: d.total != null ? d.total.toLocaleString() : '0',
-    sales: d.sales ? d.sales.nama : '-'
+    tanggal: d.tanggal
+      ? new Date(d.tanggal).toLocaleDateString("id-ID")
+      : "-",
+    sales: d.sales?.nama || "-",
+    total: formatRupiah(d.total),
+    status: d.status || "UNPAID"
   }))
 })
+
+const getStatusClass = (status) => {
+
+  if (status === "PAID") {
+    return "bg-green-100 text-green-700"
+  }
+
+  if (status === "PARTIAL") {
+    return "bg-yellow-100 text-yellow-700"
+  }
+
+  if (status === "UNPAID") {
+    return "bg-red-100 text-red-700"
+  }
+
+  return "bg-gray-100 text-gray-700"
+}
 </script>

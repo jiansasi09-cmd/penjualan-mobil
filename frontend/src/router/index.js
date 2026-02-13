@@ -22,6 +22,8 @@ import PenjualanCreate from '@/views/admin/PenjualanCreate.vue'
 import PenjualanEdit from '@/views/admin/PenjualanEdit.vue'
 import PenjualanDetail from '@/views/admin/PenjualanDetail.vue'
 import Pembayaran from '@/views/admin/Pembayaran.vue'
+import PembayaranCreate from '@/views/admin/PembayaranCreate.vue'
+import PembayaranDetail from '@/views/admin/PembayaranDetail.vue'
 import MobilDetail from '@/views/admin/MobilDetail.vue'
 import SupplierAdd from '@/views/admin/SupplierAdd.vue'
 import SupplierDetail from '@/views/admin/SupplierDetail.vue'
@@ -130,6 +132,9 @@ const routes = [
       { path: 'penjualan/:id/edit', name: 'PenjualanEdit', component: PenjualanEdit },   // edit penjualan
   
       { path: 'pembayaran', name: 'admin-pembayaran', component: Pembayaran },
+      {path: '/admin/pembayaran',component: Pembayaran},
+      {path: '/admin/pembayaran/create',component: PembayaranCreate},
+      {path: '/admin/pembayaran/:id',component: PembayaranDetail},
       {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail},
 
       {path: 'purchase-request',name: 'admin-purchase-request',component: PurchaseRequest},
