@@ -81,7 +81,7 @@ const toggle = (key) => {
       </p>
       <ul v-show="openMenu.report" class="menu">
         <li><RouterLink to="/admin/report-pembelian" class="nav">Laporan Pembelian</RouterLink></li>
-        <li><RouterLink to="/admin/report-penjualan" class="nav">Laporan Penjualan</RouterLink></li>
+        <li><RouterLink to="/admin/report/penjualan" class="nav">Laporan Penjualan</RouterLink></li>
         <li><RouterLink to="/admin/report-stok" class="nav">Laporan Stok</RouterLink></li>
       </ul>
 

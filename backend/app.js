@@ -36,6 +36,10 @@ app.use('/api/purchase-invoice', require('./routes/purchaseInvoice.routes'))
 app.use('/api/admin/stock', require('./routes/stock.routes'))
 app.use('/api/admin/mutation', require('./routes/mutation.routes'))
 app.use('/api/admin/sales-order', require('./routes/salesOrder.routes'))
+app.use('/api/report/penjualan', require('./routes/reportPenjualan.routes'))
+app.use('/api/report/pembelian', require('./routes/reportPembelian.routes'))
+app.use('/api/report/stok', require('./routes/reportStok.routes'))
+
 
 // ================= PEMBAYARAN =================
 app.use('/api/pembayaran-customer', require('./routes/pembayaranCustomer.routes'))

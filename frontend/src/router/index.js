@@ -49,6 +49,9 @@ import PurchaseInvoiceIndex from '@/views/admin/PurchaseInvoiceIndex.vue'
 import PurchaseInvoiceCreate from '@/views/admin/PurchaseInvoiceCreate.vue'
 import PurchaseInvoiceDetail from '@/views/admin/PurchaseInvoiceDetail.vue'
 
+import ReportPenjualan from '@/views/admin/ReportPenjualan.vue'
+import ReportPenjualanDetail from '@/views/admin/ReportPenjualanDetail.vue'
+
 
 
 // ================= CUSTOMER VIEWS =================
@@ -167,9 +170,10 @@ const routes = [
       {path: 'sales-order',component: SalesOrder},
       {path: 'sales-order/create',component: SalesOrderAdd},
       {path: 'sales-order/:id',component: SalesOrderDetail},
-      {path: 'sales-order/:id/edit',component: SalesOrderEdit}
+      {path: 'sales-order/:id/edit',component: SalesOrderEdit},
 
-
+      {path: '/admin/report/penjualan',name: 'ReportPenjualan',component: ReportPenjualan},
+      {path: '/admin/report/penjualan/:id',name: 'ReportPenjualanDetail',component: ReportPenjualanDetail,props: true}
 
     ]
   },
