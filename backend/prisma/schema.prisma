@@ -22,6 +22,7 @@ model User {
   pembayaranCustomer PembayaranCustomer[]
 
   purchaseRequests PurchaseRequest[] // ✅ TAMBAH INI
+  salesOrders      SalesOrder[]
 }
 
 enum Role {
@@ -46,6 +47,8 @@ model Customer {
   booking    Booking[]
   pesanan    Pesanan[]
   pembayaran PembayaranCustomer[]
+
+  salesOrders SalesOrder[]
 }
 
 //////////////////////////////////////////////////
@@ -75,18 +78,17 @@ model Mobil {
   updatedAt DateTime @updatedAt
 
   // Relasi (tetap)
-  prItems          PurchaseRequestItem[]
-  poItems          PurchaseOrderItem[]
-  detailJual       DetailPenjualan[]
-  detailBeli       DetailPembelian[]
-  favorit          Favorit[]
-  booking          Booking[]
-  pesanan          Pesanan[]
-  GoodsReceiptItem GoodsReceiptItem[]
+  prItems              PurchaseRequestItem[]
+  poItems              PurchaseOrderItem[]
+  detailJual           DetailPenjualan[]
+  detailBeli           DetailPembelian[]
+  favorit              Favorit[]
+  booking              Booking[]
+  pesanan              Pesanan[]
+  GoodsReceiptItem     GoodsReceiptItem[]
   purchaseInvoiceItems PurchaseInvoiceItem[]
-  stockMutations StockMutation[]
-
-
+  stockMutations       StockMutation[]
+  detailSalesOrder     DetailSalesOrder[]
 }
 
 enum Transmisi {
@@ -116,6 +118,46 @@ model Sales {
   createdAt DateTime @default(now())
 
   penjualan Penjualan[]
+}
+
+enum SalesOrderStatus {
+  DRAFT
+  APPROVED
+  CANCELLED
+  SELESAI
+}
+
+model SalesOrder {
+  id      Int              @id @default(autoincrement())
+  nomor   String           @unique
+  tanggal DateTime         @default(now())
+  status  SalesOrderStatus @default(DRAFT)
+  total   Float
+
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  createdById Int
+  createdBy   User @relation(fields: [createdById], references: [id])
+
+  detail DetailSalesOrder[]
+
+  penjualan Penjualan? // 1 SO → 1 Penjualan
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DetailSalesOrder {
+  id           Int   @id @default(autoincrement())
+  salesOrderId Int
+  mobilId      Int
+  qty          Int
+  harga        Float
+  subtotal     Float
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id])
+  mobil      Mobil      @relation(fields: [mobilId], references: [id])
 }
 
 model Supplier {
@@ -204,17 +246,24 @@ model PembayaranCustomer {
 // TRANSAKSI OFFLINE SHOWROOM
 //////////////////////////////////////////////////
 model Penjualan {
-  id        Int      @id @default(autoincrement())
-  salesId   Int
-  tanggal   DateTime @default(now())
-  total     Float
-  createdAt DateTime @default(now())
+  id      Int      @id @default(autoincrement())
+  nomor   String   @unique
+  tanggal DateTime @default(now())
+  total   Float
 
-  sales      Sales             @relation(fields: [salesId], references: [id])
+  salesOrderId Int        @unique
+  salesOrder   SalesOrder @relation(fields: [salesOrderId], references: [id])
+
+  salesId Int
+  sales   Sales @relation(fields: [salesId], references: [id])
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
   detail     DetailPenjualan[]
   pembayaran Pembayaran[]
-  user       User?             @relation(fields: [userId], references: [id])
-  userId     Int?
+
+  createdAt DateTime @default(now())
 }
 
 model DetailPenjualan {
@@ -340,7 +389,7 @@ model PurchaseOrder {
   supplierId Int
   supplier   Supplier @relation(fields: [supplierId], references: [id])
 
-  items    PurchaseOrderItem[]
+  items PurchaseOrderItem[]
 
   goodsReceipts GoodsReceipt[]
 
@@ -367,7 +416,7 @@ model PurchaseInvoice {
   total   Float
   status  InvoiceStatus @default(BELUM_LUNAS)
 
-  grId Int  @unique
+  grId Int          @unique
   gr   GoodsReceipt @relation(fields: [grId], references: [id])
 
   items PurchaseInvoiceItem[]
@@ -375,6 +424,7 @@ model PurchaseInvoice {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model PurchaseInvoiceItem {
   id        Int   @id @default(autoincrement())
   invoiceId Int
@@ -386,7 +436,6 @@ model PurchaseInvoiceItem {
   invoice PurchaseInvoice @relation(fields: [invoiceId], references: [id])
   mobil   Mobil           @relation(fields: [mobilId], references: [id])
 }
-
 
 model ActivityLog {
   id        Int          @id @default(autoincrement())
@@ -427,13 +476,14 @@ model GoodsReceiptItem {
   gr    GoodsReceipt @relation(fields: [grId], references: [id])
   mobil Mobil        @relation(fields: [mobilId], references: [id])
 }
+
 model StockMutation {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   mobilId   Int
   qty       Int
   type      MutationType
   reference String?
-  createdAt DateTime @default(now())
+  createdAt DateTime     @default(now())
 
   mobil Mobil @relation(fields: [mobilId], references: [id])
 }

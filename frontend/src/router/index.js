@@ -57,6 +57,12 @@ import MutationAdd from '@/views/admin/MutationAdd.vue'
 import MutationEdit from '@/views/admin/MutationEdit.vue'
 import MutationDetail from '@/views/admin/MutationDetail.vue'
 
+// ================= ADMIN VIEWS =================
+import SalesOrder from '@/views/admin/SalesOrder.vue'
+import SalesOrderAdd from '@/views/admin/SalesOrderAdd.vue'
+import SalesOrderEdit from '@/views/admin/SalesOrderEdit.vue'
+import SalesOrderDetail from '@/views/admin/SalesOrderDetail.vue'
+
 const routes = [
   // ================= ROOT REDIRECT =================
   {
@@ -142,6 +148,15 @@ const routes = [
       { path: 'mutation/add',name: 'MutationAdd',component: MutationAdd},
       { path: 'mutation/edit/:id',name: 'MutationEdit',component: MutationEdit},
       { path: 'mutation/detail/:id',name: 'MutationDetail',component: MutationDetail},
+
+      {path: 'sales-order',component: SalesOrder},
+      {path: 'sales-order/create',component: SalesOrderAdd},
+      {path: 'sales-order',component: SalesOrder},
+      {path: 'sales-order/create',component: SalesOrderAdd},
+      {path: 'sales-order/:id',component: SalesOrderDetail},
+      {path: 'sales-order/:id/edit',component: SalesOrderEdit}
+
+
 
     ]
   },
