@@ -50,6 +50,13 @@ import PurchaseInvoiceDetail from '@/views/admin/PurchaseInvoiceDetail.vue'
 import MobilList from '@/views/customer/MobilList.vue'
 import SalesEdit from '../views/admin/SalesEdit.vue'
 
+// ================= INVENTORY =================
+import Stock from '@/views/admin/Stock.vue'
+import MutasiStok from '@/views/admin/MutasiStok.vue'
+import MutationAdd from '@/views/admin/MutationAdd.vue'
+import MutationEdit from '@/views/admin/MutationEdit.vue'
+import MutationDetail from '@/views/admin/MutationDetail.vue'
+
 const routes = [
   // ================= ROOT REDIRECT =================
   {
@@ -127,7 +134,14 @@ const routes = [
 
       {path: '/admin/purchase-invoice',name: 'PurchaseInvoiceIndex',component: PurchaseInvoiceIndex},
       {path: '/admin/purchase-invoice/create/:grId',name: 'PurchaseInvoiceCreate',component: PurchaseInvoiceCreate},
-      {path: '/admin/purchase-invoice/detail/:id',name: 'PurchaseInvoiceDetail',component: PurchaseInvoiceDetail}
+      {path: '/admin/purchase-invoice/detail/:id',name: 'PurchaseInvoiceDetail',component: PurchaseInvoiceDetail},
+
+      // ================= INVENTORY =================
+      { path: 'stock',ame: 'Stock',component: Stock,meta: { title: 'Stok Mobil', menu: 'Inventory' }},
+      { path: 'mutasi-stok',name: 'MutasiStok',component: MutasiStok,meta: { title: 'Mutasi Stok', menu: 'Inventory' }},
+      { path: 'mutation/add',name: 'MutationAdd',component: MutationAdd},
+      { path: 'mutation/edit/:id',name: 'MutationEdit',component: MutationEdit},
+      { path: 'mutation/detail/:id',name: 'MutationDetail',component: MutationDetail},
 
     ]
   },

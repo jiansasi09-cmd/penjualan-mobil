@@ -61,7 +61,7 @@ const toggle = (key) => {
         📦 Inventory
       </p>
       <ul v-show="openMenu.inventory" class="menu">
-        <li><RouterLink to="/admin/stok" class="nav">Stok</RouterLink></li>
+        <li><RouterLink to="/admin/stock" class="nav">Stok</RouterLink></li>
         <li><RouterLink to="/admin/mutasi-stok" class="nav">Mutasi Stok</RouterLink></li>
       </ul>
 

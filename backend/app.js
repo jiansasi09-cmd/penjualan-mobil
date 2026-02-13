@@ -33,6 +33,8 @@ app.use('/api/purchase-request', require('./routes/purchaseRequest.routes'))
 app.use('/api/purchase-order', require('./routes/purchaseOrder.routes'))
 app.use('/api/goods-receipt', require('./routes/goodsReceipt.routes'))
 app.use('/api/purchase-invoice', require('./routes/purchaseInvoice.routes'))
+app.use('/api/admin/stock', require('./routes/stock.routes'))
+app.use('/api/admin/mutation', require('./routes/mutation.routes'))
 
 
 
