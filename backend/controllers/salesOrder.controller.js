@@ -8,7 +8,10 @@ exports.create = async (req, res) => {
   try {
     const { nomor, customerId, createdById, items } = req.body
 
-    // hitung total
+    if (!nomor || !customerId || !createdById || !items || items.length === 0) {
+      return res.status(400).json({ message: "Data tidak lengkap" })
+    }
+
     let total = 0
     items.forEach(item => {
       total += item.qty * item.harga
@@ -33,34 +36,63 @@ exports.create = async (req, res) => {
         customer: true,
         createdBy: true,
         detail: {
-          include: { mobil: true }
+          include: {
+            mobil: true
+          }
         }
       }
     })
 
     res.json(salesOrder)
+
   } catch (error) {
+    console.error("❌ CREATE SO ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
 
+
 // =============================
-// GET ALL
+// GET ALL SALES ORDER
 // =============================
 exports.findAll = async (req, res) => {
   try {
+
+    const allowedStatus = ["PENDING", "APPROVED", "REJECTED"]
+
+    const { status } = req.query
+
+    let filter = {}
+
+    if (status && allowedStatus.includes(status)) {
+      filter.status = status
+    }
+
     const data = await prisma.salesOrder.findMany({
+      where: filter,
       include: {
         customer: true,
         createdBy: true,
-        detail: { include: { mobil: true } }
+        detail: {
+          include: {
+            mobil: true
+          }
+        }
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: {
+        createdAt: "desc"
+      }
     })
 
     res.json(data)
+
   } catch (error) {
-    res.status(500).json({ message: error.message })
+
+    console.error(error)
+
+    res.status(500).json({
+      message: error.message
+    })
   }
 }
 
@@ -69,45 +101,68 @@ exports.findAll = async (req, res) => {
 // =============================
 exports.findOne = async (req, res) => {
   try {
+    const id = parseInt(req.params.id)
+
     const data = await prisma.salesOrder.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id },
       include: {
         customer: true,
         createdBy: true,
-        detail: { include: { mobil: true } }
+        detail: {
+          include: {
+            mobil: true
+          }
+        }
       }
     })
 
+    if (!data) {
+      return res.status(404).json({
+        message: "Sales Order tidak ditemukan"
+      })
+    }
+
     res.json(data)
+
   } catch (error) {
+    console.error("❌ GET ONE SO ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
+
 
 // =============================
 // UPDATE STATUS
 // =============================
 exports.updateStatus = async (req, res) => {
   try {
-    const { status } = req.body
     const id = parseInt(req.params.id)
+    const { status } = req.body
 
     const so = await prisma.salesOrder.findUnique({
       where: { id },
       include: { detail: true }
     })
 
-    if (!so) return res.status(404).json({ message: "SO tidak ditemukan" })
+    if (!so) {
+      return res.status(404).json({
+        message: "Sales Order tidak ditemukan"
+      })
+    }
 
     const result = await prisma.$transaction(async (tx) => {
 
-      // kalau APPROVED → kurangi stok
+      // jika APPROVED → kurangi stok
       if (status === "APPROVED" && so.status !== "APPROVED") {
-        for (let item of so.detail) {
+
+        for (const item of so.detail) {
+
           await tx.mobil.update({
             where: { id: item.mobilId },
             data: {
-              stok: { decrement: item.qty }
+              stok: {
+                decrement: item.qty
+              }
             }
           })
 
@@ -119,20 +174,22 @@ exports.updateStatus = async (req, res) => {
               reference: so.nomor
             }
           })
+
         }
+
       }
 
-      const updated = await tx.salesOrder.update({
+      return await tx.salesOrder.update({
         where: { id },
         data: { status }
       })
 
-      return updated
     })
 
     res.json(result)
 
   } catch (error) {
+    console.error("❌ UPDATE STATUS ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
@@ -150,7 +207,7 @@ exports.remove = async (req, res) => {
       include: { penjualan: true }
     })
 
-    if (so.penjualan) {
+    if (so?.penjualan) {
       return res.status(400).json({
         message: "SO sudah dipakai Penjualan, tidak bisa dihapus"
       })
@@ -160,10 +217,12 @@ exports.remove = async (req, res) => {
       where: { id }
     })
 
-    res.json({ message: "Sales Order deleted" })
+    res.json({
+      message: "Sales Order berhasil dihapus"
+    })
 
   } catch (error) {
+    console.error("❌ DELETE SO ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
-

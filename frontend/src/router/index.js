@@ -18,6 +18,9 @@ import EditSales from '@/views/admin/SalesEdit.vue'
 import Supplier from '@/views/admin/Supplier.vue'
 import Pembelian from '@/views/admin/Pembelian.vue'
 import Penjualan from '@/views/admin/Penjualan.vue'
+import PenjualanCreate from '@/views/admin/PenjualanCreate.vue'
+import PenjualanEdit from '@/views/admin/PenjualanEdit.vue'
+import PenjualanDetail from '@/views/admin/PenjualanDetail.vue'
 import Pembayaran from '@/views/admin/Pembayaran.vue'
 import MobilDetail from '@/views/admin/MobilDetail.vue'
 import SupplierAdd from '@/views/admin/SupplierAdd.vue'
@@ -121,6 +124,11 @@ const routes = [
 
       { path: 'pembelian', name: 'admin-pembelian', component: Pembelian },
       { path: 'penjualan', name: 'admin-penjualan', component: Penjualan },
+      {path: '/admin/penjualan',name: 'Penjualan',component: Penjualan},
+      { path: 'penjualan/create', name: 'PenjualanCreate', component: PenjualanCreate }, // tambah penjualan
+      { path: 'penjualan/:id', name: 'PenjualanDetail', component: PenjualanDetail },    // detail penjualan
+      { path: 'penjualan/:id/edit', name: 'PenjualanEdit', component: PenjualanEdit },   // edit penjualan
+  
       { path: 'pembayaran', name: 'admin-pembayaran', component: Pembayaran },
       {path: 'mobil/detail/:id',name: 'admin-mobil-detail',component: MobilDetail},
 
