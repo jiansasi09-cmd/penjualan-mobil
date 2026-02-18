@@ -4,6 +4,7 @@ const api = axios.create({
   baseURL: 'http://localhost:3000/api/favorit'
 })
 
+// pasang token Authorization
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('customer_token')
   if (token) {
@@ -12,23 +13,19 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// ambil semua favorit user
 export const getFavorit = async () => {
   const res = await api.get('/')
   return res.data
 }
 
-export const addFavorit = async (mobilId) => {
-  const res = await api.post('/', { mobilId })
-  return res.data
+// toggle favorit (langsung add/remove)
+export const toggleFavorit = async (customerId, mobilId) => {
+  const res = await api.post('/toggle', { customerId, mobilId })
+  return res.data // { action: 'added' | 'removed', favorit: [...] }
 }
-
-export const removeFavorit = async (mobilId) => {
-  const res = await api.delete(`/${mobilId}`)
+// ambil semua mobil
+export const getMobils = async () => {
+  const res = await api.get('/')
   return res.data
-}
-
-export const toggleFavorit = async (mobilId, isFavorit) => {
-  return isFavorit
-    ? removeFavorit(mobilId)
-    : addFavorit(mobilId)
 }
