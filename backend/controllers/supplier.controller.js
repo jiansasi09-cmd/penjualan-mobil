@@ -26,32 +26,73 @@ exports.getAll = async (req, res) => {
 }
 
 // ================= GET SUPPLIER BY ID =================
+// ================= GET SUPPLIER BY ID =================
 exports.getById = async (req, res) => {
+
   try {
+
     const supplier = await prisma.supplier.findUnique({
-      where: { id: Number(req.params.id) },
+
+      where: {
+        id: Number(req.params.id)
+      },
+
       include: {
-        pembelian: {
+
+        purchaseOrders: {
+
           include: {
-            detail: {
+
+            goodsReceipts: {
+
               include: {
-                mobil: true
+
+                invoice: {
+
+                  include: {
+
+                    items: {
+
+                      include: {
+                        mobil: true
+                      }
+
+                    }
+
+                  }
+
+                }
+
               }
+
             }
+
           }
+
         }
+
       }
+
     })
 
     if (!supplier) {
-      return res.status(404).json({ message: 'Supplier tidak ditemukan' })
+      return res.status(404).json({
+        message: 'Supplier tidak ditemukan'
+      })
     }
 
     res.json(supplier)
+
   } catch (error) {
+
     console.error(error)
-    res.status(500).json({ message: 'Gagal mengambil detail supplier' })
+
+    res.status(500).json({
+      message: 'Gagal mengambil detail supplier'
+    })
+
   }
+
 }
 
 // ================= CREATE SUPPLIER =================

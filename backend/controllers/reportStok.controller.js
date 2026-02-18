@@ -1,35 +1,96 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-exports.getAll = async (req, res) => {
-  try {
-    const data = await prisma.mobil.findMany({
-      select: { id:true,nama:true,merk:true,tipe:true,tahun:true,warna:true,harga:true,stok:true,status:true },
-      orderBy: { nama: 'asc' }
-    })
-    res.json({ success: true, total: data.length, data })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ success: false, message: 'Gagal load report stok' })
-  }
-}
 
-exports.getSummary = async (req, res) => {
+// ===============================
+// GET LAPORAN STOK (SEMUA MOBIL)
+// ===============================
+exports.getAll = async (req, res) => {
+
   try {
-    const totalMobil = await prisma.mobil.count()
-    const totalUnit = await prisma.mobil.aggregate({ _sum: { stok: true } })
-    const totalNilai = await prisma.mobil.aggregate({ _sum: { harga: true } })
+
+    const stok = await prisma.mobil.findMany({
+
+      include: {
+        stockMutations: {
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }
+      },
+
+      orderBy: {
+        nama: 'asc'
+      }
+
+    })
 
     res.json({
-      success: true,
-      data: {
-        totalMobil,
-        totalUnit: totalUnit._sum.stok || 0,
-        totalNilai: totalNilai._sum.harga || 0
-      }
+      status: 'success',
+      data: stok
     })
+
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ success: false, message: 'Gagal load summary stok' })
+
+    console.error("ERROR REPORT STOK:", err)
+
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    })
+
   }
+
+}
+
+
+
+// ===============================
+// GET DETAIL STOK MOBIL
+// ===============================
+exports.getOne = async (req, res) => {
+
+  try {
+
+    const id = parseInt(req.params.id)
+
+    const mobil = await prisma.mobil.findUnique({
+
+      where: { id },
+
+      include: {
+        stockMutations: {
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }
+      }
+
+    })
+
+    if (!mobil) {
+
+      return res.status(404).json({
+        status: 'error',
+        message: 'Mobil tidak ditemukan'
+      })
+
+    }
+
+    res.json({
+      status: 'success',
+      data: mobil
+    })
+
+  } catch (err) {
+
+    console.error("ERROR DETAIL STOK:", err)
+
+    res.status(500).json({
+      status: 'error',
+      message: err.message
+    })
+
+  }
+
 }

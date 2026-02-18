@@ -51,6 +51,11 @@ import PurchaseInvoiceDetail from '@/views/admin/PurchaseInvoiceDetail.vue'
 
 import ReportPenjualan from '@/views/admin/ReportPenjualan.vue'
 import ReportPenjualanDetail from '@/views/admin/ReportPenjualanDetail.vue'
+import ReportPembelian from '@/views/admin/ReportPembelian.vue'
+import ReportPembelianDetail from '@/views/admin/ReportPembelianDetail.vue'
+import ReportStok from '@/views/admin/ReportStok.vue'
+import ReportStokDetail from '@/views/admin/ReportStokDetail.vue'
+
 
 
 
@@ -173,7 +178,11 @@ const routes = [
       {path: 'sales-order/:id/edit',component: SalesOrderEdit},
 
       {path: '/admin/report/penjualan',name: 'ReportPenjualan',component: ReportPenjualan},
-      {path: '/admin/report/penjualan/:id',name: 'ReportPenjualanDetail',component: ReportPenjualanDetail,props: true}
+      {path: '/admin/report/penjualan/:id',name: 'ReportPenjualanDetail',component: ReportPenjualanDetail,props: true},
+      {path: '/admin/report/pembelian',name: 'ReportPembelian',component: ReportPembelian},
+      {path: '/admin/report/pembelian/:id',component: ReportPembelianDetail},
+      {path: '/admin/report/stok',component: ReportStok},
+      {path: '/admin/report/stok/:id',component: ReportStokDetail}
 
     ]
   },
