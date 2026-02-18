@@ -76,6 +76,8 @@ import SalesOrderAdd from '@/views/admin/SalesOrderAdd.vue'
 import SalesOrderEdit from '@/views/admin/SalesOrderEdit.vue'
 import SalesOrderDetail from '@/views/admin/SalesOrderDetail.vue'
 
+import Favorit from '@/views/customer/Favorit.vue'
+
 const routes = [
   // ================= ROOT REDIRECT =================
   {
@@ -198,6 +200,7 @@ const routes = [
     children: [
       { path: 'mobil', name: 'customer-mobil', component: MobilList },
       {path: 'profile',name: 'customer-profile',component: CustomerProfile},
+      { path: 'favorit', name: 'customer-favorit', component: Favorit },
       { path: 'profile/edit/:id', name: 'customer-profile-edit', component: CustomerEdit }
     ]
   },
